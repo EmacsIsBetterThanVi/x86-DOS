@@ -1,10 +1,4 @@
 #!/bin/sh
-
-#  MAKEIMG.sh
-#  x86-DOS
-#
-#  Created by Raphael Wise on 5/8/24.
-#
 if $(uname) | grep "Darwin"; then
 hdiutil create -fs ExFAT -srcfolder ~/x86-DOS/img/ -volname “x86-DOS” -nospotlight -format UDRO ~/x86-DOS/x86-DOS.img
 else
