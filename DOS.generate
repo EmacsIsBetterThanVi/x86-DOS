@@ -1,5 +1,5 @@
 mkdir build $PWD
-sh nasm -o build/MBR BOOTLOADER.s
+sh nasm -o MBR -f bin BOOTLOADER.s
 generate CORE.c build/
 link CORE build
 sh mv build/CORE img

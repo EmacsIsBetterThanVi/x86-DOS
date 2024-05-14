@@ -1,5 +1,3 @@
 #!/bin/sh
 
-nasm -o BOOTLOADER BOOTLOADER.s
-
-
+nasm -o MBR BOOTLOADER.s

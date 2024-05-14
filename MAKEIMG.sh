@@ -13,4 +13,5 @@ sudo mkfs exfat -F x86-DOS.img
 sudo mkdir -p /tmp/mount_tmp/ && sudo mount -o loop,rw,sync x86-DOS.img /tmp/mount_tmp
 sudo mv img/* /tmp/mount_tmp
 sudo umount x86-DOS.img
+sudo dd if=MBR of=x86-DOS.img bs=512 count=1 seek=0
 fi
