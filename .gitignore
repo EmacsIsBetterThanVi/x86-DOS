@@ -2,3 +2,5 @@ test/
 build/
 img/
 x86-DOS.img
+MBR
+x86-DOS.xcodeproj
