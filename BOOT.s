@@ -1,0 +1,27 @@
+; BOOT CONFIGUERATION
+db 'A' ; BOOT OPERATION, D:DEVKERNEL, M:MENU, anything else:NORMAL KERNEL, can open menu
+db 0 ; BOOT VERBOSLY
+times 256 - ($ - $$) db 0
+; MENU ENTRY NAMES(IGNORE UNTIL 0 IF NAME STARTS WITH THE ESC CHARACTER
+db "NORMAL", 0, 1Bh, "KERNEL", 0
+db "DEV", 0, 1Bh, "DEVKERNEL", 0
+db "AUTO: NORMAL", 0
+db "AUTO: DEV", 0
+db "MENU", 0
+db "WRITE BOOT OPTION", 0
+db "VERBOSE?", 0
+db 02 ; End Menu entries with 02
+times 480 - ($ - $$) db 0
+; OPERATION
+;	1: BOOT {NAME OFFSET}(IN MENU ENTRYS)
+;	2: SET {OFFSET}(IN BOOT CONFIGUERATION)(SETS TO VAL)
+;	3: LOAD {VALUE}
+;	4: TOGLE {OFFSET} (NOT CURRENTLY ENABLED)
+db 1, 0
+db 1, 7
+db 3, 'A'
+db 3, 'D'
+db 3, 'M'
+db 2, 0
+db 4, 1
+times 512 - ($ - $$) db 0

@@ -10,7 +10,9 @@ KERN equ 1000h
 DISK equ 2000h
 SECTORCOUNT: db 0
 SECTOR_START: dw 0
-KERNELFILE: "KERNEL"
+DEVKERNEL: db "DEV"
+KERNELFILE: db "KERNEL", 0
+CONFIGFILE: db "BOOT.CFG", 0
 start:
     cld
     push cs
@@ -31,12 +33,83 @@ LoadRootDirectoryFileList: ; All files we need are located here, particularly th
     pop es
     xor bx, bx
     call READSECTORS
-LoadKernel:
+LoadConfig:
+    mov si, CONFIGFILE
+    call LOCATE
+    mov bx, 512
+    call READSECTORS
+CheckBoot:
+    cmp byte [es:512], 'D'
+    je .DEV
+    cmp byte [es:512], 'M'
+    je MENU
+    mov ah, 0h
+    int 16h
+    cmp ah, 0Eh
+    je MENU
     mov si, KERNELFILE
+    jmp LoadKernel
+.DEV:
+    mov si, DEVKERNEL
+    jmp LoadKernel
+MENU:
+    push es
+    pop ds
+    mov si, 768
+.loop:
+    call print
+    cmp byte [ds:si], 1Bh
+    je .skip
+    inc si
+    cmp byte [ds:si], 02
+    je .PROCESS
+    jmp .loop
+.skip:
+    inc si
+    cmp byte [ds:si], 0
+    je .skip
+    inc si
+    jmp .loop
+.PROCESS:
+    mov ah, 0h
+    int 16h
+    sub al, 48
+    xor ah, ah
+    mov di, 2
+    mul di
+    add ax, 480
+    push ax
+    pop bx
+    cmp byte [es:bx], 1
+    je .end
+    cmp byte [es:bx], 2
+    je .set
+    cmp byte [es:bx], 3
+    je .load
+    jmp .loop
+.set:
+    inc bx
+    mov bx, [es:bx]
+    mov byte [es:bx], cl
+    jmp .loop
+.load:
+    inc bx
+    mov cl, [es:bx]
+    jmp .loop
+.end:
+    inc bx
+    mov cl, [es:bx]
+    xor ch, ch
+    mov bx, cx
+LoadKernel:
     call LOCATE
     mov ax, KERN
     mov es, ax
     call READSECTORS
+    push cs
+    pop ds
+StartKernel:
+    jmp 1000h:0000h
     ; DETERMINE THE LOCATION AND SIZE OF FILE {DS:SI} IN THE LOADED DISK INFO BLOCK
     ; DIRECTORYS ARE FORMATED AS ENTRIES SUCH AS FOLLOWS
     ; NAME: 24 bytes
@@ -52,9 +125,17 @@ LoadKernel:
     ; EXTRA DATA: 3 bytes, program defined, some permisions expect specific data to be stored here
     ;   SYBOLIC LINK: FILE SIZE AND LOCATION
     ;   DEVICE: 1 byte for disk, 1 byte for entry in MBR
+    ; NOTES:ROOT DIRECTORY ENTRY ZERO CAN NOT BE A KERNEL LOADED FILE
 LOCATE:
     pusha ; we use lots of registers, so we push all at the begining
+    push es
+    mov ax, DISK
+    mov es, ax
     xor bx, bx
+.next:
+    mov si, 0
+    add bx, 32
+    mov di, bx
 .loop:
     mov al, [ds:si]
     cmp al, 0
@@ -64,13 +145,9 @@ LOCATE:
     inc si
     inc di
     jmp .loop
-.next:
-    mov si, 0
-    add bx, 32
-    mov di, bx
 .end:
     mov di, bx
-    add di, 26
+    add di, 25
     mov al, [es:di]
     mov byte [SECTORCOUNT], al
     inc di
@@ -78,6 +155,7 @@ LOCATE:
     inc di
     mov al, byte [es:di]
     mov word [SECTOR_START], ax
+    pop es
     popa
     ret
     ; READ {SECTORCOUNT} SECTORS STARTING AT {SECTOR_START} INTO {ES:BX}
