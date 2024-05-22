@@ -86,12 +86,20 @@ MENU:
     je .set
     cmp byte [es:bx], 3
     je .load
+    cmp byte [es:bx], 4
+    je .togel
     jmp .loop
 .set:
     inc bx
     mov bx, [es:bx]
     mov byte [es:bx], cl
     jmp .loop
+.togel:
+    inc bx
+    mov bx, [es:bx]
+    mov cl, [es:bx]
+    add cl, 256
+    mov byte [es:bx], cl
 .load:
     inc bx
     mov cl, [es:bx]
@@ -125,7 +133,7 @@ StartKernel:
     ; EXTRA DATA: 3 bytes, program defined, some permisions expect specific data to be stored here
     ;   SYBOLIC LINK: FILE SIZE AND LOCATION
     ;   DEVICE: 1 byte for disk, 1 byte for entry in MBR
-    ; NOTES:ROOT DIRECTORY ENTRY ZERO CAN NOT BE A KERNEL LOADED FILE
+    ; NOTES:ROOT DIRECTORY ENTRY ZERO CAN NOT BE A BOOTLOADER LOADED FILE
 LOCATE:
     pusha ; we use lots of registers, so we push all at the begining
     push es
