@@ -4,3 +4,6 @@ img/
 x86-DOS.img
 MBR
 x86-DOS.xcodeproj
+# Ignore replit files
+.replit
+replit.nix
