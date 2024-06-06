@@ -133,7 +133,8 @@ void DOSFS(char * cmd){
             }
             if(x != 0) printf("ERROR CODE: %d", x);
         } else if(e(tokens[0], "rm")){
-            int x=0;//FILE_SYSTEM();
+            int x=0;
+            //FILE_SYSTEM();
             if(x != 0) printf("ERROR CODE: %d", x);
         }
     }
