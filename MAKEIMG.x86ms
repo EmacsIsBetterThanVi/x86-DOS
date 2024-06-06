@@ -1,0 +1,12 @@
+mount x86-DOS.img A
+mkdir bin
+cp ON BOOT.CFG BOOT.CFG
+cd C:/~/build
+cp ON KERNEL KERNEL
+cd A:/bin/
+cp ON DOSCPP PP
+cp ON DOSCC CC
+cp ON DOSASM ASM
+cp ON DOSMAKE MAKE
+unmount x86-DOS.img A
+exit

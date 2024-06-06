@@ -1,0 +1,16 @@
+@sysdef OUT.DIR img
+@loaddefs DOS.cfg
+@default: all
+debug:
+  @sysdef DEBUG -v
+all: 
+  @target kernel
+  @return
+  
+kernel:
+  @changed: KERNEL.c
+  @ramfile KERNEL
+  PP KERNEL.c -o RAM_KERNEL $KERNPP
+  CC RAM_KERNEL -o RAM_KERNEL $KERNCC
+  ASM RAM_KERNEL -o KERNEL $KERNASM
+  @return
