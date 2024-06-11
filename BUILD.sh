@@ -1,11 +1,11 @@
 #!/bin/sh
 
 mkdir build
-clang Tools/x86-DOSCC.c -o build/CC.bin
-clang Tools/x86-DOSPP.c -o build/PP.bin
-clang Tools/x86-DOSASM.c -o build/ASM.bin
-clang Tools/x86-DOSFSMOUNT.c -o build/FSMOUNT.bin
-clang Tools/x86-DOSMAKE.c -o build/MAKE.bin
+gcc -iquote include Tools/x86-DOSCC.c -o build/CC.bin
+gcc -iquote include Tools/x86-DOSPP.c -o build/PP.bin
+gcc -iquote include Tools/x86-DOSASM.c -o build/ASM.bin
+gcc -iquote include Tools/x86-DOSFSMOUNT.c -o build/FSMOUNT.bin
+gcc -iquote include Tools/x86-DOSMAKE.c -o build/MAKE.bin
 nasm -o MBR BOOTLOADER.s
 nasm -o ROOT ROOT.s
 nasm -o BOOT.CFG BOOT.s
