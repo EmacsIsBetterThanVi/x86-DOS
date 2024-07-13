@@ -11,10 +11,13 @@ typedef struct SegTable {
 SegTable SegTable_init(char * fname, int size, int elementSize){
   SegTable s;
   if(size%elementSize==0){
-    FILE * fptr=fopen(fname, "rb");
-    char * ptr = (char*)malloc(size);
-    s.length=fread(ptr, 1, size, fptr)/elementSize;
-    fclose(fptr);
+    if(fname!=0){
+      s.ptr=fopen(fname, "r");
+      FILE * fptr=fopen(fname, "rb");
+      char * ptr = (char*)malloc(size);
+      s.length=fread(ptr, 1, size, fptr)/elementSize;
+      fclose(fptr);
+    }
     s.ptr=ptr;
     s.dim=Dimension(size/elementSize, elementSize);
   }
@@ -25,7 +28,7 @@ void SegTable_free(char * ptr){
 }
 int SegTable_add(char * ptr, SegTable table){
   int i=0;
-  if(table.length=>table.dim.hight) return 0;
+  if(table.length >= table.dim.hight) return 0;
   while(ptr[i]!=0 && i<table.dim.width){
     table.ptr[(table.length*table.dim.width)+i]=ptr[i];
     i++;
@@ -35,7 +38,7 @@ int SegTable_add(char * ptr, SegTable table){
 }
 int SegTable_put(char * ptr, SegTable table, int index){
   int i=0;
-  if(index>=table.length) return 0;
+  if(index >= table.length) return 0;
   while(ptr[i]!=0 && i<table.dim.width){
     table.ptr[(index*table.dim.width)+i]=ptr[i];
     i++;
