@@ -15,6 +15,7 @@ int DISK1SIZE=0;
 unsigned char DISK2[2097152];
 int DISK2SIZE=0;
 int CTRL_C_OP=0;
+char tmp[1024];
 char * SYSpath;
 char * DOSFSpath;
 int e(char * arg1, char * arg2){
@@ -112,20 +113,25 @@ void DOSFS(char * cmd){
         } else if(e(tokens[0], "cd")){
             if(tokens[1][0] == 'C'){
                 tokens[1]++;
-                strcpy(SYSpath, tokens[1]);
+                if(tokens[1][0] == '.'){
+                  tokens[1]++;
+                  strcpy(tmp, SYSpath);
+                  strcat(tmp, tokens[1]);
+                  
+                } else{
+                  strcpy(SYSpath, tokens[1]);
+                }
             } else {
                 DOSFSpath=tokens[1];
             }
         } else if(e(tokens[0], "cp")){
             int x=0;
             if(e(tokens[1], "ON")){
-                char tmp[1024];
                 strcpy(tmp, SYSpath);
                 strcat(tmp, tokens[2]);
                 FILE *ptr = fopen(tmp, "rb");
                 //x=FILE_SYSTEM();
             } else {
-                char tmp[1024];
                 strcpy(tmp, SYSpath);
                 strcat(tmp, tokens[3]);
                 FILE *ptr = fopen(tmp, "wb");

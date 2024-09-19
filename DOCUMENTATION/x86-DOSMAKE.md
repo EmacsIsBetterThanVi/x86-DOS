@@ -11,4 +11,6 @@ Uses shell syntax however build instructions have a @ at the begining, with SUBT
 @target SUBTARGET; Calls the SUBTARGET<br/>
 @changed: FILENAME; If the given file is unchanged then return<br/>
 @ramfile NAME; Creates a RAM File, or in other words, a registered shared memory address instead of writing to the disk. Name is RAM_NAME <br/>
-@loaddefs FILENAME; Loads FILENAME as key:value pairs of variables(DOES NOT INCLUDE AUTO PASSED)
+@loaddefs FILENAME; Loads FILENAME as key:value pairs of variables(DOES NOT INCLUDE AUTO PASSED) <br/>
+@undef NAME; deletes a variable<br/>
+@delram NAME; deletes a RAM file caldded RAM_NAME

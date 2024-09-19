@@ -18,7 +18,7 @@ times 480 - ($ - $$) db 0
 ;	3: LOAD {VALUE}
 ;	4: TOGLE {OFFSET} (NOT CURRENTLY ENABLED)
 db 1, 0
-db 1, 7
+db 1, 15
 db 3, 'A'
 db 3, 'D'
 db 3, 'M'

@@ -58,35 +58,22 @@ Pair Split(char delim, char * str, int maxsize){
   p.value=value;
   return p;
 }
-bool eq(char * str1, char * str2, char end){
-  int i=0;
-  while(str1[i]==str2[i]){
-    if(str1[i]==end){
-      return true;
-    }
+char * stoa(short num){
+  char * str=calloc(6, sizeof(char));
+  short i=0;
+  while(num!=0){
+    str[i]=(num%10)+48;
+    num/=10;
     i++;
   }
-  return false;
 }
-int eqpos(char * str1, char * str2, char split){
-  int i=0;
-  int x=0;
-  while(str1[i]!=0 && str2[i]!=0){
-    if(str1[i]==split && str2[i]==split){
-      x=i;
-      i++;
-      while(str1[i]==str1[i]){
-        if(str1[i]==split && str1[i]==split){
-          return x;
-        }
-        if(str1[i]==0 && str1[i]==0){
-          return x;
-        }
-        i++;
-      }
-      i++;
-    }
+#ifdef ARR_H
+// Scans argv for a given argument, returns the index of the argument, or on failure
+int ARG_SCAN(char ** argv, int argc, char * target){
+  for(i=1; i<argc; i++){
+    if(Strequ(argv[i], target)) return i;
   }
-  return -1;
+  return 0
 }
+#endif
 #endif

@@ -4,13 +4,24 @@
 typedef struct RamFile {
   char * ptr;
   int length;
+  int pointer
 } RamFile;
-RamFile OpenRamFile(char * fname, int size){
+#define RamFile_END -1
+#define RamFile_START 0
+RamFile OpenRamFile(char * fname, int size, int spointer){
   RamFile rf;
-  FILE * fptr=fopen(fname, "rb");
-  char * ptr = (char*)malloc(size);
-  rf.length=fread(ptr, 1, size, fptr);
-  fclose(fptr);
+  if(fname!=0){
+    FILE * fptr=fopen(fname, "rb");
+    char * ptr = (char*)calloc(size);
+    rf.length=fread(ptr, 1, size, fptr);
+    fclose(fptr);
+  } else{
+    char * ptr = (char*)calloc(size);
+    rf.length=0;
+  }
+  if(spointer!=-1) {
+    rf.pointer=spointer;
+  }
   rf.ptr=ptr;
   return rf;
 }
@@ -27,5 +38,27 @@ void StoreRamFile(RamFile rf, char * fname){
 }
 RamFile LoadedRamFile(char * fname){
   mfetch(fname);
+}
+int PutRamFile(RamFile rf, char * data){
+  int i=0;
+  while(data[i]!=0){
+    rf.ptr[rf.pointer]=data[i];
+    rf.pointer++;
+    i++;
+  }
+  if(rf.pointer>rf.length){
+    rf.length=rf.pointer;
+  }
+}
+char * GetRamFile(RamFile rf, int size){
+  char * tmp=calloc(size, sizeof(char));
+  for(int i=0; i<size; i++){
+    tmp[i]=rf.ptr[rf.pointer];
+    rf.pointer++;
+  }
+  return tmp;
+}
+void SeekRamFile(RamFile rf, int offset){
+  rf.pointer = offset
 }
 #endif

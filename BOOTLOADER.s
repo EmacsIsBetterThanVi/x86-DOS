@@ -39,14 +39,14 @@ LoadConfig:
     mov bx, 512
     call READSECTORS
 CheckBoot:
-    cmp byte [es:512], 'D'
-    je .DEV
     cmp byte [es:512], 'M'
     je MENU
     mov ah, 0h
     int 16h
     cmp ah, 0Eh
     je MENU
+    cmp byte [es:512], 'D'
+    je .DEV
     mov si, KERNELFILE
     jmp LoadKernel
 .DEV:
@@ -67,7 +67,7 @@ MENU:
 .skip:
     inc si
     cmp byte [ds:si], 0
-    je .skip
+    jne .skip
     inc si
     jmp .loop
 .PROCESS:
@@ -78,8 +78,7 @@ MENU:
     mov di, 2
     mul di
     add ax, 480
-    push ax
-    pop bx
+    mov bx, ax
     cmp byte [es:bx], 1
     je .end
     cmp byte [es:bx], 2
@@ -128,11 +127,9 @@ StartKernel:
     ;   EXECUTABLE
     ;   WRITE
     ;   DIRECTORY
-    ;   IF DIRECTORY:DEVICE; ELSE:SYBOLIC LINK
-    ;   LOW FOUR BITS ARE PROGRAM DEFINED, UNLESS FILE IS A DEVICE, IN WHICH CASE THEY BECOME THE PARTION ENTRY
-    ; EXTRA DATA: 3 bytes, program defined, some permisions expect specific data to be stored here
-    ;   SYBOLIC LINK: FILE SIZE AND LOCATION
-    ;   DEVICE: 1 byte for disk, 1 byte for entry in MBR
+    ;   READ(IF 0 THEN THE DIRECTORY CAN NOT BE VIEWED)
+    ;   LOW FOUR BITS ARE PROGRAM DEFINED
+    ; EXTRA DATA: 3 bytes, program defined
     ; NOTES:ROOT DIRECTORY ENTRY ZERO CAN NOT BE A BOOTLOADER LOADED FILE
 LOCATE:
     pusha ; we use lots of registers, so we push all at the begining
@@ -238,7 +235,7 @@ ROOTDIRECTORY: dw 0001h ; WHERE THE ROOTDIRECTORY IS LOCATED, IN A SPECIFIC LOCA
     db 1                        ;     CHS: high cylinder bits and sector bits
     db 0                        ;     CHS: cylinder
     
-    db 07h                      ; Claims to be EXFAT, is not actualy.
+    db 031h                      ; I am stealing your reserved partition entry Microsoft, deal with it.
     
                                 ; partition last sector
     db 1                        ;     CHS: head
