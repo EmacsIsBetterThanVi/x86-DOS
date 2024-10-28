@@ -2,7 +2,7 @@
 A build system for x86-DOS, uses .x86mk as it's file extention and the command for using it is <br/>
 *x86-DOSMAKE.bin SUPERTARGET.SUBTARGET*<br/>
 # SYNTAX
-Uses shell syntax however build instructions have a @ at the begining, with SUBTARGETS formated as NAME:
+Uses shell syntax however, build instructions have an @ at the begining, with SUBTARGETS formated as NAME:
 # COMMANDS
 @default: SUBTARGET; Sets what just passing a SUPERTARGET does, skiping everything before the SUBTARGET, also sets when to branch based on SUBTARGET<br/>
 @def NAME VALUE; Defines a variable <br/>
