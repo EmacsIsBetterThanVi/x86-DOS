@@ -10,18 +10,18 @@ typedef struct Pair{
   char * key;
   char * value;
 } Pair;
-Dimensions Dimension(int hight, int width){
-  Dimensions d;
-  d.width=width;
-  d.hight=hight;
+Dimensions * Dimension(int hight, int width){
+  Dimensions * d = (Dimensions *)malloc(sizeof(Dimensions));
+  d->width=width;
+  d->hight=hight;
   return d;
 };
-Pair new_Pair(char * str, int keysize, int fullsize){
-  char * key=str
+Pair * new_Pair(char * str, int keysize, int fullsize){
+  char * key=str;
   char * value=str+keysize;
-  Pair p;
-  p.key=key;
-  p.value=value;
+  Pair * p=(Pair *)malloc(sizeof(Pair));
+  p->key=key;
+  p->value=value;
   return p;
 }
 char * join(char * str1, char * str2){
@@ -37,12 +37,12 @@ char * join(char * str1, char * str2){
   }
   return str;
 }
-Pair Split(char delim, char * str, int maxsize){
+Pair * Split(char delim, char * str, int maxsize){
   int i=0;
   int k=0;
-  Pair p;
-  char * key=calloc(maxsize, sizeof(char));
-  char * value=calloc(maxsize, sizeof(char));
+  Pair * p=(Pair *)malloc(sizeof(Pair));
+  char * key=(char *)calloc(maxsize, sizeof(char));
+  char * value=(char *)calloc(maxsize, sizeof(char));
   while(str[k]!=delim){
     key[i]=str[k];
     i++;
@@ -54,12 +54,12 @@ Pair Split(char delim, char * str, int maxsize){
     k++;
     i++;
   }
-  p.key=key;
-  p.value=value;
+  p->key=key;
+  p->value=value;
   return p;
 }
 char * stoa(short num){
-  char * str=calloc(6, sizeof(char));
+  char * str=(char *)calloc(6, sizeof(char));
   short i=0;
   while(num!=0){
     str[i]=(num%10)+48;
@@ -68,7 +68,7 @@ char * stoa(short num){
   }
 }
 #ifdef ARR_H
-// Scans argv for a given argument, returns the index of the argument, or on failure
+// Scans argv for a given argument, returns the index of the argument, or 0 on failure
 int ARG_SCAN(char ** argv, int argc, char * target){
   for(i=1; i<argc; i++){
     if(Strequ(argv[i], target)) return i;

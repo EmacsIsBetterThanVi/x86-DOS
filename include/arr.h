@@ -37,7 +37,7 @@ int Strfind(char * str1, char * str2, char split){
     if(str1[i]==split && str2[i]==split){
       x=i;
       i++;
-      while(str1[i]==str1[i]){
+      while(str1[i]==str2[i]){
         if(str1[i]==split && str1[i]==split){
           return x;
         }
@@ -58,12 +58,19 @@ int Sarrfind(char ** arr, char * str){
     if(Strequ(arr[i], str)) return i;
     i++;
   }
-  return -1
+  return -1;
+}
+int Sarrlen(char ** arr){
+    int i=0;
+    while(arr[i][0]!=0){
+        i++;
+    }
+    return i;
 }
 // Appends str to arr
 void Sarradd(char ** arr, char * str){
-  int x=Carrlen(arr);
-  char ** arr2=calloc(sizeof(char*)*(x+1));
+  int x=Sarrlen(arr);
+  char ** arr2=calloc(sizeof(char*)*(x+1), 1);
   for(int i=0; i<x; i++){
     arr2[i]=arr[i];
   }

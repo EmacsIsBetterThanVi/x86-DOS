@@ -97,7 +97,7 @@ MENU:
     inc bx
     mov bx, [es:bx]
     mov cl, [es:bx]
-    add cl, 256
+    xor cl, 255
     mov byte [es:bx], cl
 .load:
     inc bx
@@ -112,6 +112,7 @@ LoadKernel:
     call LOCATE
     mov ax, KERN
     mov es, ax
+    xor bx, bx
     call READSECTORS
     push cs
     pop ds
@@ -209,15 +210,14 @@ print:
 .end:
     popa
     ret
-%if %eval(438 - ($ - $$)) > 0
-%warning %eval(438 - ($ - $$)) bytes remaining
-%elif %eval(438 - ($ - $$)) < 0
+%if %eval(440 - ($ - $$)) > 0
+%warning %eval(440 - ($ - $$)) bytes remaining
+%elif %eval(440 - ($ - $$)) < 0
 %fatal "OUT OF SPACE"
 %else
 %warning "no bytes remaining."
 %endif
-times 438 - ($ - $$)  db 0 ; MAKE IT EXACTLY 438 BYTES
-ROOTDIRECTORY: dw 0001h ; WHERE THE ROOTDIRECTORY IS LOCATED, IN A SPECIFIC LOCATION SO WE ALWAYS KNOW WERE IT IS.
+times 440 - ($ - $$)  db 0 ; MAKE IT EXACTLY 440 BYTES
 ;------------------------------------------------------------------------------
 ; Reserved bytes after boot loader
 ;------------------------------------------------------------------------------
@@ -242,7 +242,7 @@ ROOTDIRECTORY: dw 0001h ; WHERE THE ROOTDIRECTORY IS LOCATED, IN A SPECIFIC LOCA
     db 18                        ;     CHS: high cylinder bits and sector bits
     db 79                        ;     CHS: cylinder
     
-    dd 0                        ; first LBA sector
+ROOTDIRECTORY:	dd 1                           ; first LBA sector
     dd 2880                        ; number of sectors in partition
     
     ; partition 1

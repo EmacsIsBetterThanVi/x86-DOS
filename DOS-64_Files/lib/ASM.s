@@ -83,6 +83,14 @@ db "dd *6"
 times %eval(16 - (($ - $$) % 16)) db 0
 db "*(%n)"
 times %eval(16 - (($ - $$) % 16)) db 0
+db "call i6"
+times %eval(16 - (($ - $$) % 16)) db 0
+db "e8 %1"
+times %eval(16 - (($ - $$) % 16)) db 0
+db "call i6:i6"
+times %eval(16 - (($ - $$) % 16)) db 0
+db "9a %1 %2"
+times %eval(16 - (($ - $$) % 16)) db 0
 %warning %eval($ - $$)
 %warning Remaning space: %eval(65536 - ($ - $$))
 ; al, cl, dl, bl, a, c, d, b

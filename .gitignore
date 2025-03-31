@@ -4,6 +4,13 @@ img/
 x86-DOS.img
 MBR
 x86-DOS.xcodeproj
+*.bin
 # Ignore replit files
 .replit
 replit.nix
+.DS_Store
+.ENTRY
+.EXIT
+Project.ede
+.dir-locals.el
+.clangd
