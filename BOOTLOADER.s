@@ -131,38 +131,53 @@ StartKernel:
     ;   READ(IF 0 THEN THE DIRECTORY CAN NOT BE VIEWED)
     ;   LOW FOUR BITS ARE PROGRAM DEFINED
     ; EXTRA DATA: 3 bytes, program defined
-    ; NOTES:ROOT DIRECTORY ENTRY ZERO CAN NOT BE A BOOTLOADER LOADED FILE
 LOCATE:
-    pusha ; we use lots of registers, so we push all at the begining
+    push ax
+    push bx
+    push cx
+    push dx
     push es
-    mov ax, DISK
-    mov es, ax
-    xor bx, bx
+    push word DISK
+	pop es
+	push si
+	xor bx, bx
+	xor di, di
+    jmp .loop	
 .next:
-    mov si, 0
-    add bx, 32
-    mov di, bx
+	pop si
+	push si
+	add bx, 32
+	mov di, bx
 .loop:
     mov al, [ds:si]
     cmp al, 0
-    je .end
+    je .pend
     cmp al, [es:di]
     jne .next
     inc si
     inc di
-    jmp .loop
+	jmp .loop
+.pend:
+	cmp byte [es:di], 0
+	jne .next
 .end:
+    pop si
     mov di, bx
     add di, 25
     mov al, [es:di]
     mov byte [SECTORCOUNT], al
-    inc di
-    mov ah, byte [es:di]
+    and si, 0FFh	
     inc di
     mov al, byte [es:di]
+    inc di
+    mov ah, byte [es:di]
     mov word [SECTOR_START], ax
+.exit:
     pop es
-    popa
+    pop dx
+    pop cx
+    pop bx
+    pop ax	
     ret
     ; READ {SECTORCOUNT} SECTORS STARTING AT {SECTOR_START} INTO {ES:BX}
 READSECTORS:

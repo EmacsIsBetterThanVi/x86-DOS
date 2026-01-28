@@ -1,9 +1,11 @@
+#include <stdio.h>
 #ifndef SSmap_H
 #ifdef x86_DOS
 #include <arr.h>
 #else
 #include "arr.h"
 #endif
+
 typedef struct SSmap {
   char ** keys;
   char ** values;
@@ -51,8 +53,16 @@ void SSmap_put(char * key, char * value, SSmap * map){
         map->count++;
       } 
     } 
-  } 
-} 
+  }
+}
+void SSmap_puti(char *key, int *value, SSmap *map) {
+  int x = Sarrfind(map->keys, key);
+  char *values = (char *)malloc(16);
+  sprintf(values, "%d", value);
+  if (x != -1) {
+    map->values[x]=values;
+  }
+}
 
 #define SSmap_H
 #endif

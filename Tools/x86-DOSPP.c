@@ -6,23 +6,24 @@
 //
 #include <stdio.h>
 #include <stdbool.h>
-#include "arr.h"
+#include "../include/arr.h"
 #ifdef x86_DOS
 #include <SegTable.h>
 #define PUT_MACRO(name, value) SegTable_add(join(name, value), MACROS)
 #else
-#include "SSmap.h"
+#include "../include/SSmap.h"
 #define PUT_MACRO(name, value) SSmap_put(name, value, MACROS)
+#define PUT_MACROI(name, value) SSmap_puti(name, value, MACROS)
 #endif
 #ifdef x86_DOS
 SegTable MACROS;
 #else
 char ** MACRO_NAMES;
 char ** MACRO_VALUES;
-SSmap MACROS;
+SSmap * MACROS;
 #endif
 char * File;
-int PREPROCCES(char * fname){
+int PREPROCESS(char * fname){
   FILE * fptr=fopen(fname, "r");
   int linen=0;
   PUT_MACRO("__FILE__", fname);
@@ -30,7 +31,7 @@ int PREPROCCES(char * fname){
   bool inFunction = false;
   while(fgets(line, 2048, fptr)!=NULL){
     linen++;
-    PUT_MACRO("__LINE__", stoa(linen));
+    PUT_MACROI("__LINE__", &linen);
     if(line[0]=='#'){
       if(Strfind(line, "#include", ' ')){
         int START;
@@ -43,6 +44,17 @@ int PREPROCCES(char * fname){
           char * ffname=calloc(Carrlen(tfname)-1, sizeof(char));
           Strcopy(ffname, Carrlen(tfname)-1, tfname);
         }
+      } else if (Strfind(line, "#define", ' ')) {
+        int START = Cfind(line, ' ');
+        char *TMP = line + START + 1;
+        START = Cfind(TMP, ' ');
+	line[START]=0;
+        char *KEY = calloc(Carrlen(TMP) + 1, sizeof(char));
+        Strcopy(KEY, Carrlen(TMP), TMP);
+	TMP = TMP+START+1;
+        char *VALUE = calloc(Carrlen(TMP) + 1, sizeof(char));
+	Strcopy(VALUE, Carrlen(TMP), TMP);
+        PUT_MACRO(KEY, VALUE);
       }
     }
   }
@@ -58,6 +70,6 @@ int main(int argc, char ** argv){
   File = calloc(65536, 1);
   PUT_MACRO("x86_DOS", "1");
   PUT_MACRO("__FILE__", argv[1]);
-  PREPROCCES(argv[1]);
+  PREPROCESS(argv[1]);
   return 0;
 }
